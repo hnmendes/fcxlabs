@@ -12,6 +12,6 @@ public class UserIdentity : IdentityUser
 	public string CPF { get; set; }
 	public DateTime BirthDate { get; set; }
 	public string MotherName { get; set; }
-	public DateTime CreatedAt { get; set; }
-	public DateTime ModifiedAt { get; set; }
+	public DateTime CreatedOn { get; set; }
+	public DateTime ModifiedOn { get; set; }
 }

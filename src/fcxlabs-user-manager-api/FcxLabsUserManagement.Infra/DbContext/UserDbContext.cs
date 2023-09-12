@@ -17,6 +17,23 @@ namespace FcxLabsUserManagement.Infra
 			SeedRoles(builder);
 		}
 		
+		public override Task<int> SaveChangesAsync(CancellationToken cto = default)
+		{
+			foreach(var entry in ChangeTracker.Entries<UserIdentity>())
+			{
+				switch(entry.State)
+				{
+					case EntityState.Added:
+						entry.Entity.CreatedOn = DateTime.Now;
+						break;
+					case EntityState.Modified:
+						entry.Entity.ModifiedOn = DateTime.Now;
+						break;
+				}
+			}
+			return base.SaveChangesAsync(cto);
+		}
+		
 		private static void SeedRoles(ModelBuilder builder)
 		{
 			builder.Entity<IdentityRole>().HasData(
