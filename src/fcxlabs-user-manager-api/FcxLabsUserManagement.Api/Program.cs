@@ -1,12 +1,19 @@
+using System.Reflection;
+using FcxLabsUserManagement.Application;
 using FcxLabsUserManagement.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+//Secrets
+builder.Configuration.AddEnvironmentVariables().AddUserSecrets(Assembly.GetExecutingAssembly(), true);
+
+//Adding App Dependencies
 builder.Services.AddInfraServices(builder.Configuration);
+builder.Services.AddApplicationServices();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

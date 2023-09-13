@@ -1,33 +1,31 @@
 using FcxLabsUserManagement.Application.Common.Models.Auth.Signup;
 using FcxLabsUserManagement.Application.Extensions.Conversions;
 using FcxLabsUserManagement.Application.User.Commands;
-using FcxLabsUserManagement.Infra;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FcxLabsUserManagement.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class AuthController : ControllerBase
 {
 	private readonly IMediator _mediator;
-	
+
 	public AuthController(IMediator mediator)
 	{
 		_mediator = mediator;
 	}
-	
-	[HttpPost]
+
+	[HttpPost("sign-up")]
 	public async Task<IActionResult> Signup([FromBody] RegisterUser userForm)
 	{
-		return await _mediator.Send(userForm.ToRegisterUserCommand());
+		return await _mediator.Send(userForm.ToRegisterUserCommand(Request.Scheme, Url));
 	}
 	
-	[HttpPost]
-	public async Task<IActionResult> SignupWithRole([FromBody] RegisterUser userForm, string role)
+	[HttpGet("confirm-email")]
+	public async Task<IActionResult> ConfirmEmail([FromQuery] string email, [FromQuery] string token)
 	{
-		return await _mediator.Send(userForm.ToRegisterUserWithRole(role));
+		return await _mediator.Send(new ConfirmUserEmailCommand { Token = token, Email = email });
 	}
 }
