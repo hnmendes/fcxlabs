@@ -8,18 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FcxLabsUserManagement.Application.User.Handlers;
 
-public class RegisterUserWithRoleHandler : IRequestHandler<RegisterUserWithRoleCommand, ObjectResult>
+public class CreateUserWithRoleHandler : IRequestHandler<CreateUserWithRoleCommand, ObjectResult>
 {
 	private readonly UserManager<UserIdentity> _userManager;
 	private readonly RoleManager<IdentityRole> _roleManager;
 	
-	public RegisterUserWithRoleHandler(UserManager<UserIdentity> userManager, RoleManager<IdentityRole> roleManager)
+	public CreateUserWithRoleHandler(UserManager<UserIdentity> userManager, RoleManager<IdentityRole> roleManager)
 	{
 		_userManager = userManager;
 		_roleManager = roleManager;
 	}
 	
-	public async Task<ObjectResult> Handle(RegisterUserWithRoleCommand request, CancellationToken cancellationToken)
+	public async Task<ObjectResult> Handle(CreateUserWithRoleCommand request, CancellationToken cancellationToken)
 	{
 		var userExists = await _userManager.FindByEmailAsync(request.Email);
 		
@@ -36,7 +36,7 @@ public class RegisterUserWithRoleHandler : IRequestHandler<RegisterUserWithRoleC
 			Email = request.Email,
 			BirthDate = request.BirthDate,
 			CPF = request.CPF,
-			Login = request.Login,
+			UserName = request.UserName,
 			MotherName = request.MotherName,
 			Name = request.Name,
 			MobilePhone = request.MobilePhone,
@@ -64,6 +64,9 @@ public class RegisterUserWithRoleHandler : IRequestHandler<RegisterUserWithRoleC
 		
 		await _userManager.AddToRoleAsync(user, request.Role);
 		
-		return new ObjectResult(new Response { Status = "Success", Message = "User Created Successfully!" });
+		return new ObjectResult(new Response { Status = "Success", Message = "User Created Successfully!" })
+        {
+        	StatusCode = StatusCodes.Status201Created
+        };
 	}
 }

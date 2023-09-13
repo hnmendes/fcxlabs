@@ -1,11 +1,12 @@
 using FcxLabsUserManagement.Application.Common.Models.Auth.Signup;
 using FcxLabsUserManagement.Application.User.Commands;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FcxLabsUserManagement.Application.Extensions.Conversions;
 
 public static class ViewModelsExtensions
 {
-	public static RegisterUserCommand ToRegisterUserCommand(this RegisterUser registerUser)
+	public static RegisterUserCommand ToRegisterUserCommand(this RegisterUser registerUser, string scheme, IUrlHelper url)
 	{
 		return new RegisterUserCommand
 		{
@@ -13,22 +14,24 @@ public static class ViewModelsExtensions
 			BirthDate = registerUser.BirthDate,
 			CPF = registerUser.CPF,
 			Email = registerUser.Email,
-			Login = registerUser.Login,
+			UserName = registerUser.UserName,
 			MobilePhone = registerUser.MobilePhone,
 			MotherName = registerUser.MotherName,
-			Password = registerUser.Password
+			Password = registerUser.Password,
+			Scheme = scheme,
+			Url = url
 		};
 	}
 	
-	public static RegisterUserWithRoleCommand ToRegisterUserWithRole(this RegisterUser registerUser, string role)
+	public static CreateUserWithRoleCommand ToCreateUserWithRoleCommand(this RegisterUser registerUser, string role)
 	{
-		return new RegisterUserWithRoleCommand
+		return new CreateUserWithRoleCommand
 		{
 			Name = registerUser.Name,
 			BirthDate = registerUser.BirthDate,
 			CPF = registerUser.CPF,
 			Email = registerUser.Email,
-			Login = registerUser.Login,
+			UserName = registerUser.UserName,
 			MobilePhone = registerUser.MobilePhone,
 			MotherName = registerUser.MotherName,
 			Password = registerUser.Password,

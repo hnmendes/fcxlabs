@@ -10,8 +10,8 @@ namespace FcxLabsUserManagement.Application.Common.Models.Auth.Signup
 		[Required(ErrorMessage = "Password is required.")]
 		public string Password { get; set; }
 		
-		[Required(ErrorMessage = "Login is required.")]
-		public string Login { get; set; }
+		[Required(ErrorMessage = "Login/UserName is required.")]
+		public string UserName { get; set; }
 		
 		[Required(ErrorMessage = "MobilePhone is required.")]
 		public string MobilePhone { get; set; }

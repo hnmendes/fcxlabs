@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FcxLabsUserManagement.Infra.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20230912020603_Adding User DB")]
-    partial class AddingUserDB
+    [Migration("20230912232734_Initial Migration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,6 +42,9 @@ namespace FcxLabsUserManagement.Infra.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -55,11 +58,11 @@ namespace FcxLabsUserManagement.Infra.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Login")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("MobilePhone")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("MotherName")
                         .HasColumnType("nvarchar(max)");
@@ -139,14 +142,14 @@ namespace FcxLabsUserManagement.Infra.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6ef327c4-a38c-4700-b4c6-7a0daebc4703",
+                            Id = "5608ee74-cd23-4f06-aee5-3dc872874482",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "88b60292-84e0-4e17-a3e4-6ab07b35b349",
+                            Id = "f860fd11-0eb2-46eb-8e9b-9fb2ef5d2ddb",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"

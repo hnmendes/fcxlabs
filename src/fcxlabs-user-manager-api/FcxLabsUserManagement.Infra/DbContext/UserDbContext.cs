@@ -15,6 +15,7 @@ namespace FcxLabsUserManagement.Infra
 		{
 			base.OnModelCreating(builder);
 			SeedRoles(builder);
+			AddUniqueColumns(builder);
 		}
 		
 		public override Task<int> SaveChangesAsync(CancellationToken cto = default)
@@ -40,6 +41,13 @@ namespace FcxLabsUserManagement.Infra
 				new IdentityRole() { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" },
 				new IdentityRole() { Name = "User", ConcurrencyStamp = "2", NormalizedName = "User" }	
 			);
+		}
+		
+		private static void AddUniqueColumns(ModelBuilder builder)
+		{
+			builder.Entity<UserIdentity>()
+				.HasIndex(u => u.CPF)
+				.IsUnique();
 		}
 	}
 }
