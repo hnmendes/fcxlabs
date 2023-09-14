@@ -1,5 +1,8 @@
 using FcxLabsUserManagement.Application.Common.Models;
+using FcxLabsUserManagement.Application.Extensions.Conversions;
 using FcxLabsUserManagement.Application.User.Commands;
+using FcxLabsUserManagement.Core;
+using FcxLabsUserManagement.Core.Contracts.Services;
 using FcxLabsUserManagement.Infra;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -10,22 +13,22 @@ namespace FcxLabsUserManagement.Application.User.Handlers;
 
 public class ConfirmUserEmailHandler : IRequestHandler<ConfirmUserEmailCommand, ObjectResult>
 {
-	private readonly UserManager<UserIdentity> _userManager;
+    private readonly IUserService _userService;
 
-	public ConfirmUserEmailHandler(UserManager<UserIdentity> userManager)
+    public ConfirmUserEmailHandler(IUserService userService)
 	{
-		_userManager = userManager;
-	}
+        _userService = userService;
+    }
 	
 	public async Task<ObjectResult> Handle(ConfirmUserEmailCommand request, CancellationToken cancellationToken)
 	{
-		var user = await _userManager.FindByEmailAsync(request.Email);
+		var user = await _userService.GetUserByEmailAsync(request.Email);
 		
 		if(user is not null)
 		{
-			var result = await _userManager.ConfirmEmailAsync(user, request.Token);
+			var result = await _userService.ConfirmEmailAsync(user, request.Token);
 	
-			if(!result.Succeeded)
+			if(!result)
 			{
 				return new ObjectResult(new Response { Status = "Error", Message = "Failed to confirm email." })
 				{

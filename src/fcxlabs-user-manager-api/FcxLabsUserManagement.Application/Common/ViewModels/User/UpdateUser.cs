@@ -1,13 +1,13 @@
 using FcxLabsUserManagement.Core.Enums;
 
-namespace FcxLabsUserManagement.Core.Contracts;
+namespace FcxLabsUserManagement.Application.Common.ViewModels.User;
 
-public interface IUser : IBaseEntity
+public class UpdateUser
 {
-	public string Id { get; set; }
 	public string Name { get; set; }
 	public string UserName { get; set; }
 	public string MobilePhone { get; set; }
+	public string Password { get; set; }
 	public Status Status { get; set; }
 	public string CPF { get; set; }
 	public DateTime BirthDate { get; set; }

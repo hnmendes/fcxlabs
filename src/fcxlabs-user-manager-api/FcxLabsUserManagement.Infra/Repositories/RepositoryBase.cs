@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using FcxLabsUserManagement.Core.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,15 +27,33 @@ public class RepositoryBase<T> : IRepositoryBase<T> where T : class
 		return entity;
 	}
 
-	public async Task<IEnumerable<T>> GetAllAsync()
+	public async Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>> predicate = null, 
+										   Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, 
+										   List<Expression<Func<T, object>>> includes = null, 
+										   bool disableTracking = true)
 	{
-		var entities = await _db.Set<T>().AsNoTracking().ToListAsync();
-		return entities;
+		IQueryable<T> query = _db.Set<T>();
+		
+		if(disableTracking)
+			query = query.AsNoTracking();
+		if(includes is not null)
+			query = includes.Aggregate(query, (current, include) => current.Include(include));
+		if(predicate is not null)
+			query = query.Where(predicate);
+		if(orderBy is not null)
+			return await orderBy(query).ToListAsync();
+		
+		return await query.ToListAsync();
 	}
 
-	public async Task<T> GetAsync(T entity)
+    public async Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>> predicate = null)
+    {
+        return await GetAsync(predicate,null);
+    }
+
+    public async Task<T> GetByIdAsync(string id)
 	{
-		return await _db.Set<T>().FindAsync(entity);
+		return await _db.Set<T>().FindAsync(id);
 	}
 
 	public async Task<T> UpdateAsync(T entity)
@@ -42,5 +61,10 @@ public class RepositoryBase<T> : IRepositoryBase<T> where T : class
 		_db.Set<T>().Update(entity);
 		await _db.SaveChangesAsync();
 		return entity;
+	}
+
+	async Task<IReadOnlyList<T>> IRepositoryBase<T>.GetAllAsync()
+	{
+		return await _db.Set<T>().ToListAsync();
 	}
 }

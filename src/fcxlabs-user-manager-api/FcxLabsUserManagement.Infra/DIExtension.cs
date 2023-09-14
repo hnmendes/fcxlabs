@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using FcxLabsUserManagement.Core;
 using FcxLabsUserManagement.Core.Contracts.Repositories;
 using FcxLabsUserManagement.Core.Contracts.Services;
 using FcxLabsUserManagement.Infra.Configurations;
@@ -21,6 +21,8 @@ public static class DIExtension
 		var emailConfig = config.GetSection(nameof(EmailConfig)).Get<EmailConfig>();
 		services.AddSingleton(emailConfig);
 		
+		services.AddLogging();
+		
 		//DB
 		
 		services.AddDbContext<UserDbContext>(options => options.UseSqlServer(config.GetConnectionString("UserDB")));
@@ -38,9 +40,12 @@ public static class DIExtension
 
 		//Identity
 		
-		services.AddIdentity<UserIdentity, IdentityRole>()
-				.AddEntityFrameworkStores<UserDbContext>()
-				.AddDefaultTokenProviders();
+		services.AddIdentity<UserIdentity, IdentityRole>(options => 
+            {
+              options.User.RequireUniqueEmail = true;  
+            })
+            .AddEntityFrameworkStores<UserDbContext>()
+            .AddDefaultTokenProviders();
 		
 		services.Configure<IdentityOptions>(
 			options => options.SignIn.RequireConfirmedEmail = true

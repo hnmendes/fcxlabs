@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.22" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.21" />
   </ItemGroup>
   <ItemGroup>

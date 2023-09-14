@@ -1,27 +1,25 @@
 using FcxLabsUserManagement.Application.Common.Models;
 using FcxLabsUserManagement.Application.User.Commands;
-using FcxLabsUserManagement.Infra;
+using FcxLabsUserManagement.Core;
+using FcxLabsUserManagement.Core.Contracts.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FcxLabsUserManagement.Application.User.Handlers;
 
 public class CreateUserWithRoleHandler : IRequestHandler<CreateUserWithRoleCommand, ObjectResult>
 {
-	private readonly UserManager<UserIdentity> _userManager;
-	private readonly RoleManager<IdentityRole> _roleManager;
-	
-	public CreateUserWithRoleHandler(UserManager<UserIdentity> userManager, RoleManager<IdentityRole> roleManager)
+	private readonly IUserService _userService;
+
+	public CreateUserWithRoleHandler(IUserService userService)
 	{
-		_userManager = userManager;
-		_roleManager = roleManager;
+		_userService = userService;
 	}
 	
 	public async Task<ObjectResult> Handle(CreateUserWithRoleCommand request, CancellationToken cancellationToken)
 	{
-		var userExists = await _userManager.FindByEmailAsync(request.Email);
+		var userExists = await _userService.GetUserByEmailAsync(request.Email);
 		
 		if(userExists is not null)
 		{
@@ -44,7 +42,9 @@ public class CreateUserWithRoleHandler : IRequestHandler<CreateUserWithRoleComma
 			Status = Core.Enums.Status.ACTIVATED
 		};
 		
-		if(!await _roleManager.RoleExistsAsync(request.Role))
+		var roleExists = await _userService.RoleExistsAsync(request.Role);
+		
+		if(!roleExists)
 		{
 			return new ObjectResult(new Response { Status = "Error", Message = "User Failed To Create." })
 			{
@@ -52,9 +52,9 @@ public class CreateUserWithRoleHandler : IRequestHandler<CreateUserWithRoleComma
 			};
 		}
 		
-		var result = await _userManager.CreateAsync(user, request.Password);
+		var result = await _userService.CreateUserAsync(user, request.Password);
 			
-		if(!result.Succeeded)
+		if(!result)
 		{
 			return new ObjectResult(new Response { Status = "Error", Message = "User Failed To Create." })
 			{
@@ -62,11 +62,15 @@ public class CreateUserWithRoleHandler : IRequestHandler<CreateUserWithRoleComma
 			};	
 		}
 		
-		await _userManager.AddToRoleAsync(user, request.Role);
+		await _userService.AddToRoleAsync(user, request.Role);
+		
+		var token = await _userService.GenerateEmailConfirmationTokenAsync(user);
+		
+		await _userService.ConfirmEmailAsync(user, token);
 		
 		return new ObjectResult(new Response { Status = "Success", Message = "User Created Successfully!" })
-        {
-        	StatusCode = StatusCodes.Status201Created
-        };
+		{
+			StatusCode = StatusCodes.Status201Created
+		};
 	}
 }

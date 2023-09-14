@@ -15,4 +15,6 @@ public class User : IBaseEntity, IUser
     public string EntityId { get; }
     public DateTime CreatedOn { get; set; }
     public DateTime ModifiedOn { get; set; }
+    public string Email { get; set; }
+    public string Id { get; set; }
 }

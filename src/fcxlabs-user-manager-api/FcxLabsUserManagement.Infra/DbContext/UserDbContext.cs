@@ -1,3 +1,4 @@
+using FcxLabsUserManagement.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +49,10 @@ namespace FcxLabsUserManagement.Infra
 			builder.Entity<UserIdentity>()
 				.HasIndex(u => u.CPF)
 				.IsUnique();
+			
+			builder.Entity<UserIdentity>()
+				.HasIndex(u => u.Email)
+				.IsUnique();			
 		}
 	}
 }
