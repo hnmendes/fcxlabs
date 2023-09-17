@@ -1,32 +1,32 @@
-using System.ComponentModel.DataAnnotations;
+
+using System.Text.Json.Serialization;
 
 namespace FcxLabsUserManagement.Application.Common.Models.Auth.Signup
 {
-	public class RegisterUser
+    public class RegisterUser
 	{
-		[Required(ErrorMessage = "Name is required.")]
+		[JsonPropertyName("name")]
 		public string Name { get; set; }
 		
-		[Required(ErrorMessage = "Password is required.")]
+		[JsonPropertyName("password")]
 		public string Password { get; set; }
 		
-		[Required(ErrorMessage = "Login/UserName is required.")]
+		[JsonPropertyName("username")]
 		public string UserName { get; set; }
 		
-		[Required(ErrorMessage = "MobilePhone is required.")]
+		[JsonPropertyName("mobilePhone")]
 		public string MobilePhone { get; set; }
 		
-		[EmailAddress]
-		[Required(ErrorMessage = "Email is required.")]
+		[JsonPropertyName("email")]
 		public string Email { get; set; }
 		
-		[Required(ErrorMessage = "CPF is required.")]
+		[JsonPropertyName("cpf")]
 		public string CPF { get; set; }
 		
-		[Required(ErrorMessage = "BirthDate is required.")]
-		public DateTime BirthDate { get; set; }
+		[JsonPropertyName("birthDate")]
+		public DateTime? BirthDate { get; set; }
 		
-		[Required(ErrorMessage = "MotherName is required.")]
+		[JsonPropertyName("motherName")]
 		public string MotherName { get; set; }	
 	}	
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FcxLabsUserManagement.Infra.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Migrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,7 +31,7 @@ namespace FcxLabsUserManagement.Infra.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MobilePhone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CPF = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CPF = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MotherName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -165,12 +165,12 @@ namespace FcxLabsUserManagement.Infra.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "5608ee74-cd23-4f06-aee5-3dc872874482", "1", "Admin", "Admin" });
+                values: new object[] { "47f7103a-1c26-4092-979f-d6ea5b25e927", "2", "User", "User" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "f860fd11-0eb2-46eb-8e9b-9fb2ef5d2ddb", "2", "User", "User" });
+                values: new object[] { "94a1c13d-7c03-4d81-8cbd-14a4d29f3fa3", "1", "Admin", "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -203,6 +203,20 @@ namespace FcxLabsUserManagement.Infra.Migrations
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CPF",
+                table: "AspNetUsers",
+                column: "CPF",
+                unique: true,
+                filter: "[CPF] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_Email",
+                table: "AspNetUsers",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

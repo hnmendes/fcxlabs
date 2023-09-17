@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FcxLabsUserManagement.Infra.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20230912232734_Initial Migration")]
-    partial class InitialMigration
+    [Migration("20230916124734_Migrations")]
+    partial class Migrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,7 +24,7 @@ namespace FcxLabsUserManagement.Infra.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("FcxLabsUserManagement.Infra.UserIdentity", b =>
+            modelBuilder.Entity("FcxLabsUserManagement.Core.UserIdentity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -36,7 +36,7 @@ namespace FcxLabsUserManagement.Infra.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CPF")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -102,6 +102,14 @@ namespace FcxLabsUserManagement.Infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CPF")
+                        .IsUnique()
+                        .HasFilter("[CPF] IS NOT NULL");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -142,14 +150,14 @@ namespace FcxLabsUserManagement.Infra.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5608ee74-cd23-4f06-aee5-3dc872874482",
+                            Id = "94a1c13d-7c03-4d81-8cbd-14a4d29f3fa3",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "f860fd11-0eb2-46eb-8e9b-9fb2ef5d2ddb",
+                            Id = "47f7103a-1c26-4092-979f-d6ea5b25e927",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"
@@ -273,7 +281,7 @@ namespace FcxLabsUserManagement.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("FcxLabsUserManagement.Infra.UserIdentity", null)
+                    b.HasOne("FcxLabsUserManagement.Core.UserIdentity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -282,7 +290,7 @@ namespace FcxLabsUserManagement.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("FcxLabsUserManagement.Infra.UserIdentity", null)
+                    b.HasOne("FcxLabsUserManagement.Core.UserIdentity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -297,7 +305,7 @@ namespace FcxLabsUserManagement.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FcxLabsUserManagement.Infra.UserIdentity", null)
+                    b.HasOne("FcxLabsUserManagement.Core.UserIdentity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -306,7 +314,7 @@ namespace FcxLabsUserManagement.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("FcxLabsUserManagement.Infra.UserIdentity", null)
+                    b.HasOne("FcxLabsUserManagement.Core.UserIdentity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

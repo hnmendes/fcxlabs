@@ -12,6 +12,5 @@ public interface IServiceBase<T> where T : class
 					 List<Expression<Func<T, object>>> includes = null,
 					 bool disableTracking = true);
 	Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>> predicate = null);
-	Task<T> GetByIdAsync(string id);
 	Task<IReadOnlyList<T>> GetAllAsync();
 }

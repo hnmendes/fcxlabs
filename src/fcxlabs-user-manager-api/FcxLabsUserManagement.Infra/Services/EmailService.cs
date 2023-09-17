@@ -1,19 +1,20 @@
 using FcxLabsUserManagement.Core.Contracts;
 using FcxLabsUserManagement.Core.Contracts.Services;
-using FcxLabsUserManagement.Infra.Configurations;
+using FcxLabsUserManagement.Infra.Configs.Options;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace FcxLabsUserManagement.Infra.Services;
 
 public class EmailService : IEmailService
 {
-	private readonly EmailConfig _emailConfig;
+    private readonly EmailConfigOptions _emailConfig;
 
-	public EmailService(EmailConfig emailConfig)
+    public EmailService(IOptions<EmailConfigOptions> emailConfig)
 	{
-		_emailConfig = emailConfig;
-	}
+        _emailConfig = emailConfig.Value;
+    }
 	
 	public async Task SendEmailAsync(IMessage message)
 	{

@@ -1,0 +1,111 @@
+<ng-container *ngIf="data$ | async as data">
+  <br />
+  <div class="card mx-auto col-10 col-md-8 col-lg-6">
+    <div class="container-sm">
+      <h1 class="pt-1">Cadastro</h1>
+      <p>
+        Já possui cadastro? Faça o
+        <a routerLink="/login">Login</a>
+      </p>
+      <hr />
+      <fcxlabs-backend-error-messages
+        *ngIf="data.backendErrors"
+        [backendErrors]="data.backendErrors"
+      ></fcxlabs-backend-error-messages>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="login">Login *</label>
+          <input
+            id="login"
+            type="text"
+            class="form-control"
+            formControlName="username"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Senha *</label>
+          <input
+            id="password"
+            type="password"
+            class="form-control"
+            formControlName="password"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="name">Nome *</label>
+          <input
+            id="name"
+            type="text"
+            class="form-control"
+            formControlName="name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input
+            id="email"
+            type="email"
+            class="form-control"
+            formControlName="email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="motherName">Nome da Mãe *</label>
+          <input
+            id="motherName"
+            type="text"
+            class="form-control"
+            formControlName="motherName"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="cpf">CPF *</label>
+          <input
+            id="cpf"
+            type="text"
+            mask="000.000.000-00"
+            class="form-control"
+            formControlName="cpf"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="mobilePhone">Telefone *</label>
+          <input
+            id="mobilePhone"
+            type="tel"
+            mask="(00) 0 0000-0000"
+            class="form-control"
+            formControlName="mobilePhone"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="birthDate">Data de Nascimento *</label>
+          <input
+            id="birthDate"
+            type="text"
+            class="form-control"
+            mask="d0/M0/0000"
+            [dropSpecialCharacters]="false"
+            formControlName="birthDate"
+          />
+        </div>
+        <div class="form-group mt-3 mb-2">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="data.isSubmitted"
+          >
+            Cadastrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>

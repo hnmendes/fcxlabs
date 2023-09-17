@@ -14,5 +14,4 @@ public class UserIdentity : IdentityUser, IUser
 	public string MotherName { get; set; }
 	public DateTime CreatedOn { get; set; }
 	public DateTime ModifiedOn { get; set; }
-	public string EntityId => Id; 
 }

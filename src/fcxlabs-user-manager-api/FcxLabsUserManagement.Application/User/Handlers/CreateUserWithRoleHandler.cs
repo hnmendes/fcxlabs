@@ -4,22 +4,25 @@ using FcxLabsUserManagement.Core;
 using FcxLabsUserManagement.Core.Contracts.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FcxLabsUserManagement.Application.User.Handlers;
 
 public class CreateUserWithRoleHandler : IRequestHandler<CreateUserWithRoleCommand, ObjectResult>
 {
-	private readonly IUserService _userService;
+    private readonly UserManager<UserIdentity> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-	public CreateUserWithRoleHandler(IUserService userService)
+    public CreateUserWithRoleHandler(UserManager<UserIdentity> userManager, RoleManager<IdentityRole> roleManager)
 	{
-		_userService = userService;
-	}
+        _userManager = userManager;
+        _roleManager = roleManager;
+    }
 	
 	public async Task<ObjectResult> Handle(CreateUserWithRoleCommand request, CancellationToken cancellationToken)
 	{
-		var userExists = await _userService.GetUserByEmailAsync(request.Email);
+		var userExists = await _userManager.FindByEmailAsync(request.Email);
 		
 		if(userExists is not null)
 		{
@@ -42,7 +45,7 @@ public class CreateUserWithRoleHandler : IRequestHandler<CreateUserWithRoleComma
 			Status = Core.Enums.Status.ACTIVATED
 		};
 		
-		var roleExists = await _userService.RoleExistsAsync(request.Role);
+		var roleExists = await _roleManager.RoleExistsAsync(request.Role);
 		
 		if(!roleExists)
 		{
@@ -52,9 +55,9 @@ public class CreateUserWithRoleHandler : IRequestHandler<CreateUserWithRoleComma
 			};
 		}
 		
-		var result = await _userService.CreateUserAsync(user, request.Password);
+		var result = await _userManager.CreateAsync(user, request.Password);
 			
-		if(!result)
+		if(!result.Succeeded)
 		{
 			return new ObjectResult(new Response { Status = "Error", Message = "User Failed To Create." })
 			{
@@ -62,11 +65,11 @@ public class CreateUserWithRoleHandler : IRequestHandler<CreateUserWithRoleComma
 			};	
 		}
 		
-		await _userService.AddToRoleAsync(user, request.Role);
+		await _userManager.AddToRoleAsync(user, request.Role);
 		
-		var token = await _userService.GenerateEmailConfirmationTokenAsync(user);
+		var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 		
-		await _userService.ConfirmEmailAsync(user, token);
+		await _userManager.ConfirmEmailAsync(user, token);
 		
 		return new ObjectResult(new Response { Status = "Success", Message = "User Created Successfully!" })
 		{

@@ -33,11 +33,6 @@ public class ServiceBase<T> : IServiceBase<T> where T : class
         return _db.GetAsync(predicate);
     }
 
-    public Task<T> GetByIdAsync(string id)
-    {
-        return _db.GetByIdAsync(id);
-    }
-
     public Task<T> UpdateAsync(T entity)
 	{
 		return _db.UpdateAsync(entity);

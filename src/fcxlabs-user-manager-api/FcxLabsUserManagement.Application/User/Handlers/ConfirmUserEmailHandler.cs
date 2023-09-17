@@ -1,9 +1,6 @@
 using FcxLabsUserManagement.Application.Common.Models;
-using FcxLabsUserManagement.Application.Extensions.Conversions;
 using FcxLabsUserManagement.Application.User.Commands;
 using FcxLabsUserManagement.Core;
-using FcxLabsUserManagement.Core.Contracts.Services;
-using FcxLabsUserManagement.Infra;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -13,33 +10,33 @@ namespace FcxLabsUserManagement.Application.User.Handlers;
 
 public class ConfirmUserEmailHandler : IRequestHandler<ConfirmUserEmailCommand, ObjectResult>
 {
-    private readonly IUserService _userService;
+    private readonly UserManager<UserIdentity> _userManager;
 
-    public ConfirmUserEmailHandler(IUserService userService)
-	{
-        _userService = userService;
+    public ConfirmUserEmailHandler(UserManager<UserIdentity> userManager)
+    {
+        _userManager = userManager;
     }
-	
-	public async Task<ObjectResult> Handle(ConfirmUserEmailCommand request, CancellationToken cancellationToken)
-	{
-		var user = await _userService.GetUserByEmailAsync(request.Email);
-		
-		if(user is not null)
-		{
-			var result = await _userService.ConfirmEmailAsync(user, request.Token);
-	
-			if(!result)
-			{
-				return new ObjectResult(new Response { Status = "Error", Message = "Failed to confirm email." })
-				{
-					StatusCode = StatusCodes.Status500InternalServerError
-				};
-			}			
-		}
-		
-		return new ObjectResult(new Response { Status = "Success", Message = "Email verified successfully!" })
-		{
-			StatusCode = StatusCodes.Status200OK
-		};
-	}
+
+    public async Task<ObjectResult> Handle(ConfirmUserEmailCommand request, CancellationToken cancellationToken)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user is not null)
+        {
+            var result = await _userManager.ConfirmEmailAsync(user, request.Token);
+
+            if (!result.Succeeded)
+            {
+                return new ObjectResult(new Response { Status = "Error", Message = "Falha em confirmar email." })
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+        }
+
+        return new ObjectResult(new Response { Status = "Success", Message = "Email verified successfully!" })
+        {
+            StatusCode = StatusCodes.Status200OK
+        };
+    }
 }

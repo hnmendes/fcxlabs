@@ -1,8 +1,8 @@
 using FcxLabsUserManagement.Application.Common.Models.Auth.Signup;
+using FcxLabsUserManagement.Application.Common.ViewModels.Auth.Login;
 using FcxLabsUserManagement.Application.Common.ViewModels.User;
 using FcxLabsUserManagement.Application.User.Commands;
 using FcxLabsUserManagement.Core;
-using FcxLabsUserManagement.Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FcxLabsUserManagement.Application.Extensions.Conversions;
@@ -14,7 +14,7 @@ public static class ViewModelsExtensions
 		return new RegisterUserCommand
 		{
 			Name = registerUser.Name,
-			BirthDate = registerUser.BirthDate,
+			BirthDate = registerUser.BirthDate.GetValueOrDefault(),
 			CPF = registerUser.CPF,
 			Email = registerUser.Email,
 			UserName = registerUser.UserName,
@@ -31,7 +31,7 @@ public static class ViewModelsExtensions
 		return new CreateUserWithRoleCommand
 		{
 			Name = registerUser.Name,
-			BirthDate = registerUser.BirthDate,
+			BirthDate = registerUser.BirthDate.GetValueOrDefault(),
 			CPF = registerUser.CPF,
 			Email = registerUser.Email,
 			UserName = registerUser.UserName,
@@ -42,49 +42,85 @@ public static class ViewModelsExtensions
 		};
 	}
 	
-	public static UpdateUserCommand ToUpdateUserCommand(this UpdateUser user, string id)
+	public static LoginUserCommand ToLoginUserCommand(this LoginVM loginForm)
 	{
-		return new UpdateUserCommand
+		return new LoginUserCommand
 		{
-			Id = id,
-			Name = user.Name,
-			BirthDate = user.BirthDate,
-			CPF = user.CPF,
-			Email = user.Email,
-			UserName = user.UserName,
-			MobilePhone = user.MobilePhone,
-			MotherName = user.MotherName,
-			Password = user.Password,
-			Status = user.Status,
+			Login = loginForm.Username,
+			Password = loginForm.Password	
 		};
 	}
 	
-	public static IUser ToDTO(this UserIdentity user)
+	public static UserVM ToUserVM(this UserIdentity user)
 	{
-		return new UserDTO
+		return new UserVM
 		{
 			Id = user.Id,
-			BirthDate = user.BirthDate,
 			CPF = user.CPF,
+			BirthDate = user.BirthDate,
 			Email = user.Email,
-			CreatedOn = user.CreatedOn,
-			EntityId = user.EntityId,
 			MobilePhone = user.MobilePhone,
-			ModifiedOn = user.ModifiedOn,
 			MotherName = user.MotherName,
 			Name = user.Name,
 			Status = user.Status,
-			UserName = user.UserName
+			UserName = user.UserName,
+			CreatedOn = user.CreatedOn,
+			ModifiedOn = user.CreatedOn 
 		};
 	}
 	
-	public static IReadOnlyList<IUser>ToDTO(this IReadOnlyList<UserIdentity> users)
+	public static UserLoggedVM ToUserLoggedVM(this UserIdentity user, string token)
 	{
-		var usersDTO = new List<IUser>();
+		return new UserLoggedVM
+		{
+			Id = user.Id,
+			CPF = user.CPF,
+			BirthDate = user.BirthDate,
+			Email = user.Email,
+			MobilePhone = user.MobilePhone,
+			MotherName = user.MotherName,
+			Name = user.Name,
+			Status = user.Status,
+			UserName = user.UserName,
+			Token = token
+		};
+	}
+	
+	public static UserUpdateVM ToUserUpdateVM(this UserIdentity user)
+	{
+		return new UserUpdateVM 
+		{
+			UserName = user.UserName,
+			BirthDate = user.BirthDate,
+			CPF = user.CPF,
+			MobilePhone = user.MobilePhone,
+			MotherName = user.MotherName,
+			Name = user.MotherName,
+			Status = user.Status
+		};
+	}
+	
+	public static UserIdentity ToUserEntity(this UserUpdateVM userUpdate, UserIdentity user)
+	{
+		user.UserName = userUpdate.UserName;
+		user.BirthDate = userUpdate.BirthDate;
+		user.CPF = userUpdate.CPF;
+		user.MobilePhone = userUpdate.MobilePhone;
+		user.MotherName = userUpdate.MotherName;
+		user.Name = userUpdate.Name;
+		user.Status = userUpdate.Status;
+		
+		return user;
+	}
+	
+	
+	public static IReadOnlyList<UserVM> ToUsersVM(this IReadOnlyList<UserIdentity> users)
+	{
+		var usersVM = new List<UserVM>();
 		foreach(var user in users)
 		{
-			usersDTO.Add(user.ToDTO());
+			usersVM.Add(user.ToUserVM());
 		}
-		return usersDTO;
+		return usersVM;
 	}
 }
